@@ -8,17 +8,22 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use App\Models\Rental;
 
 class OverdueNotification extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $rental;
+
     /**
      * Create a new message instance.
+     *
+     * @param  \App\Models\Rental  $rental
      */
-    public function __construct()
+    public function __construct(Rental $rental)
     {
-        //
+        $this->rental = $rental;
     }
 
     /**
@@ -27,7 +32,7 @@ class OverdueNotification extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Overdue Notification',
+            subject: 'Overdue Book Rental Notification',
         );
     }
 
@@ -37,7 +42,8 @@ class OverdueNotification extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'emails.overdue_notification',
+            with: ['rental' => $this->rental],
         );
     }
 

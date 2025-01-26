@@ -27,4 +27,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('rentals/rent', [RentalController::class, 'rentBook']);
     Route::post('rentals/return/{id}', [RentalController::class, 'returnBook']);
     Route::get('rentals/history', [RentalController::class, 'rentalHistory']);
+    Route::get('books/popular', [RentalController::class, 'getMostPopularBook']);
+    Route::get('books/overdue', [RentalController::class, 'getMostOverdueBook']);
 });

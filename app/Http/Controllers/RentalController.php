@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Rental;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class RentalController extends Controller
 {
@@ -101,5 +102,48 @@ class RentalController extends Controller
             ->get();
 
         return response()->json($rentals);
+    }
+
+    /**
+     * Get the most overdue book.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * The JSON response will contain:
+     * - title: string, the title of the most overdue book
+     * - overdue_days: integer, the number of days the book is overdue
+     */
+    public function getMostOverdueBook()
+    {
+        $mostOverdueBook = DB::table('rentals')
+            ->select('books.title', DB::raw('DATEDIFF(NOW(), rentals.due_at) as overdue_days'))
+            ->join('books', 'books.id', '=', 'rentals.book_id')
+            ->whereNull('rentals.returned_at')
+            ->where('rentals.due_at', '<', now())
+            ->orderByDesc('overdue_days')
+            ->first();
+
+        return response()->json($mostOverdueBook);
+    }
+
+    /**
+     * Get the most popular book.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * The JSON response will contain:
+     * - title: string, the title of the most popular book
+     * - rental_count: integer, the number of times the book has been rented
+     */
+    public function getMostPopularBook()
+    {
+        $mostPopularBook =  DB::table('rentals')
+            ->select('books.title', DB::raw('COUNT(rentals.id) as rental_count'))
+            ->join('books', 'books.id', '=', 'rentals.book_id')
+            ->groupBy('books.title')
+            ->orderByDesc('rental_count')
+            ->first();
+
+        return response()->json($mostPopularBook);
     }
 }
