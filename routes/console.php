@@ -17,7 +17,7 @@ Schedule::call(function () {
         ->where('returned_at', null)
         ->update(['is_overdue' => true]);
     $overdueRentals = Rental::where('is_overdue', true)->get();
-    Log::info('Overdue rentals: ' . $overdueRentals->count());
+
     foreach ($overdueRentals as $rental) {
         $user = $rental->user;
         Mail::to($user->email)->bcc(env("ADMIN_EMAIL"))->send(new OverdueNotification($rental));
