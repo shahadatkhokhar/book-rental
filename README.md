@@ -16,7 +16,7 @@ This is a Book Rental API built with Laravel. It allows users to rent books, man
 1. Clone the repository:
 
     ```sh
-    git clone https://github.com/your-username/book-rental-api.git
+    git clone https://github.com/shahadatkhokhar/book-rental-api.git
     cd book-rental-api
     ```
 
