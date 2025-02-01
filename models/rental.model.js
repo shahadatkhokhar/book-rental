@@ -9,10 +9,9 @@ const Rental = sequelize.define(
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     rented_at: {
       type: DataTypes.DATE,
-      allowNull: false,
       defaultValue: DataTypes.NOW,
     },
-    due_at: { type: DataTypes.DATE, allowNull: false },
+    due_at: { type: DataTypes.DATE },
     is_overdue: { type: DataTypes.BOOLEAN, defaultValue: false },
     returned_at: { type: DataTypes.DATE, allowNull: true },
   },

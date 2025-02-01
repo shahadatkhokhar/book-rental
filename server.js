@@ -39,3 +39,5 @@ app.listen(PORT, async () => {
     console.error("Database connection error:", error);
   }
 });
+
+module.exports = app;

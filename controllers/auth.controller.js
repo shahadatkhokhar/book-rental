@@ -9,7 +9,12 @@ require("dotenv").config();
  */
 exports.register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, password_confirmation } = req.body;
+
+    // Check if passwords match
+    if (password !== password_confirmation) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
 
     // Check if user already exists
     const existingUser = await User.findOne({ where: { email } });
@@ -39,19 +44,19 @@ exports.login = async (req, res) => {
     // Find user by email
     const user = await User.findOne({ where: { email } });
     if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(422).json({ message: "Invalid credentials" });
     }
 
     // Compare password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(422).json({ message: "Invalid credentials" });
     }
 
     // Generate JWT token
     const token = jwt.sign(
       { id: user.id, email: user.email },
-      process.env.APP_KEY,
+      process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 
